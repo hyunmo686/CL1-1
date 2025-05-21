@@ -2,56 +2,74 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>다면평가</title>
-  <style>
-    body {
-      font-family: sans-serif;
-      padding: 40px;
-    }
-    h2 {
-      text-align: center;
-    }
-    table {
-      width: 400px;
-      margin: 0 auto;
-      border-collapse: collapse;
-    }
-    th, td {
-      border: 1px solid #aaa;
-      padding: 10px;
-      text-align: center;
-    }
-    input[type="number"] {
-      width: 60px;
-      padding: 5px;
-      font-size: 16px;
-    }
-  </style>
+  <title>2점 제한 설문</title>
+
+  <!-- SurveyJS 스타일 -->
+  <link href="https://unpkg.com/survey-core@1.9.129/defaultV2.min.css" type="text/css" rel="stylesheet" />
+
+  <!-- 필수 스크립트 -->
+  <script src="https://unpkg.com/knockout@3.5.1/build/output/knockout-latest.js"></script>
+  <script src="https://unpkg.com/survey-core@1.9.129/survey.core.min.js"></script>
+  <script src="https://unpkg.com/survey-knockout-ui@1.9.129/survey.knockout-ui.min.js"></script>
 </head>
 <body>
-  <h2>다면평가</h2>
+  <div id="surveyContainer" style="padding: 40px; max-width: 700px; margin: auto;"></div>
 
-  <table>
-    <thead>
-      <tr>
-        <th>이름</th>
-        <th>점수</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>A</td>
-        <td><input type="number" min="0" max="3" /></td>
-      </tr>
-      <tr>
-        <td>B</td>
-        <td><input type="number" min="0" max="3" /></td>
-      </tr>
-      <tr>
-        <td>C</td>
-        <td><input type="number" min="0" max="3" /></td>
-      </tr>
-    </tbody>
-  </table>
+  <script>
+    window.onload = function () {
+      const surveyJSON = {
+        title: "점수 평가 (총합 2점 이하만 허용)",
+        pages: [
+          {
+            elements: [
+              {
+                type: "text",
+                name: "username",
+                title: "이름을 입력해주세요"
+              },
+              {
+                type: "rating",
+                name: "scoreA",
+                title: "A에게 점수",
+                rateMin: 0,
+                rateMax: 2,
+                rateStep: 1
+              },
+              {
+                type: "rating",
+                name: "scoreB",
+                title: "B에게 점수",
+                rateMin: 0,
+                rateMax: 2,
+                rateStep: 1
+              },
+              {
+                type: "rating",
+                name: "scoreC",
+                title: "C에게 점수",
+                rateMin: 0,
+                rateMax: 2,
+                rateStep: 1
+              }
+            ]
+          }
+        ],
+        completedHtmlOnCondition: [
+          {
+            expression: "{scoreA} + {scoreB} + {scoreC} > 2",
+            html: "<h3 style='color:red;'>❌ 총점이 2점을 초과했습니다. 다시 입력해주세요.</h3>"
+          },
+          {
+            expression: "{scoreA} + {scoreB} + {scoreC} <= 2",
+            html: "<h3 style='color:green;'>✅ 정상 제출되었습니다. 감사합니다!</h3>"
+          }
+        ]
+      };
+
+      Survey.StylesManager.applyTheme("defaultV2");
+      const survey = new Survey.Model(surveyJSON);
+      ko.applyBindings({ model: survey }, document.getElementById("surveyContainer"));
+    };
+  </script>
 </body>
 </html>
