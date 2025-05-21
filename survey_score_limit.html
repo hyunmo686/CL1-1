@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>SurveyJS - 2점 제한 설문</title>
+  <script src="https://unpkg.com/survey-core@1.9.129/survey.core.min.js"></script>
+  <script src="https://unpkg.com/survey-knockout-ui@1.9.129/survey.knockout-ui.min.js"></script>
+  <link href="https://unpkg.com/survey-core@1.9.129/defaultV2.min.css" type="text/css" rel="stylesheet"/>
+</head>
+<body>
+  <div id="surveyContainer"></div>
+
+  <script>
+    const surveyJSON = {
+      title: "점수 평가 (총합은 2점을 넘지 않아야 합니다)",
+      pages: [
+        {
+          elements: [
+            { type: "text", name: "name", title: "이름을 입력해주세요" },
+            { type: "rating", name: "scoreA", title: "A에게 점수", rateMin: 0, rateMax: 2, rateStep: 1 },
+            { type: "rating", name: "scoreB", title: "B에게 점수", rateMin: 0, rateMax: 2, rateStep: 1 },
+            { type: "rating", name: "scoreC", title: "C에게 점수", rateMin: 0, rateMax: 2, rateStep: 1 }
+          ]
+        }
+      ],
+      triggers: [
+        {
+          type: "complete",
+          expression: "{scoreA} + {scoreB} + {scoreC} > 2"
+        }
+      ],
+      completedHtmlOnCondition: [
+        {
+          expression: "{scoreA} + {scoreB} + {scoreC} > 2",
+          html: "<h3>⚠ 총점이 2점을 초과했습니다. 제출이 완료되지 않았습니다.</h3>"
+        },
+        {
+          expression: "{scoreA} + {scoreB} + {scoreC} <= 2",
+          html: "<h3>✅ 설문이 성공적으로 제출되었습니다. 감사합니다!</h3>"
+        }
+      ]
+    };
+
+    const survey = new Survey.Model(surveyJSON);
+    survey.onComplete.add(function (sender) {
+      console.log("Survey results:", sender.data);
+    });
+
+    Survey.StylesManager.applyTheme("defaultV2");
+    ko.applyBindings({ model: survey }, document.getElementById("surveyContainer"));
+  </script>
+</body>
+</html>
