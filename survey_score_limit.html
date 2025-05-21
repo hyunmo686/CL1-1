@@ -1,14 +1,15 @@
 <!DOCTYPE html>
-<html>
+<html lang="ko">
 <head>
-  <title>SurveyJS - 2점 제한 설문</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.5.1/knockout-min.js"></script>
-  <script src="https://unpkg.com/survey-core@1.9.129/survey.core.min.js"></script>
-  <script src="https://unpkg.com/survey-knockout-ui@1.9.129/survey.knockout-ui.min.js"></script>
-  <link href="https://unpkg.com/survey-core@1.9.129/defaultV2.min.css" type="text/css" rel="stylesheet"/>
+  <meta charset="UTF-8">
+  <title>2점 제한 설문</title>
+  <link href="https://unpkg.com/survey-core/defaultV2.min.css" type="text/css" rel="stylesheet"/>
+  <script src="https://unpkg.com/knockout@3.5.1/build/output/knockout-latest.js"></script>
+  <script src="https://unpkg.com/survey-core/survey.core.min.js"></script>
+  <script src="https://unpkg.com/survey-knockout-ui/survey.knockout-ui.min.js"></script>
 </head>
 <body>
-  <div id="surveyContainer"></div>
+  <div id="surveyContainer" style="padding: 40px; max-width: 600px; margin: auto;"></div>
 
   <script>
     const surveyJSON = {
@@ -23,12 +24,6 @@
           ]
         }
       ],
-      triggers: [
-        {
-          type: "complete",
-          expression: "{scoreA} + {scoreB} + {scoreC} > 2"
-        }
-      ],
       completedHtmlOnCondition: [
         {
           expression: "{scoreA} + {scoreB} + {scoreC} > 2",
@@ -41,13 +36,12 @@
       ]
     };
 
-    const survey = new Survey.Model(surveyJSON);
-    survey.onComplete.add(function (sender) {
-      console.log("Survey results:", sender.data);
-    });
-
+    const model = new Survey.Model(surveyJSON);
     Survey.StylesManager.applyTheme("defaultV2");
-    ko.applyBindings({ model: survey }, document.getElementById("surveyContainer"));
+
+    const container = document.getElementById("surveyContainer");
+    ko.cleanNode(container); // 중요: 중복 바인딩 방지
+    ko.applyBindings({ model }, container);
   </script>
 </body>
 </html>
