@@ -2,15 +2,101 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <title>다면평가</title>
+  <title>다면평가 설문</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 40px;
+      background-color: #f8f8f8;
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    form {
+      max-width: 500px;
+      margin: auto;
+      background-color: #fff;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    label {
+      display: block;
+      margin-top: 20px;
+      font-weight: bold;
+    }
+    input[type="number"],
+    input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    button {
+      margin-top: 30px;
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+  </style>
 </head>
 <body>
-  <h1>다면평가</h1>
-  <table border="1">
-    <tr><th>이름</th><th>점수</th></tr>
-    <tr><td>A</td><td><input type="number" /></td></tr>
-    <tr><td>B</td><td><input type="number" /></td></tr>
-    <tr><td>C</td><td><input type="number" /></td></tr>
-  </table>
+
+  <h2>다면평가 설문</h2>
+  <form id="surveyForm">
+    <label for="username">이름</label>
+    <input type="text" id="username" name="username" required />
+
+    <label for="scoreA">A에게 점수 (0~3)</label>
+    <input type="number" id="scoreA" name="scoreA" min="0" max="3" required />
+
+    <label for="scoreB">B에게 점수 (0~3)</label>
+    <input type="number" id="scoreB" name="scoreB" min="0" max="3" required />
+
+    <label for="scoreC">C에게 점수 (0~3)</label>
+    <input type="number" id="scoreC" name="scoreC" min="0" max="3" required />
+
+    <button type="submit">제출</button>
+  </form>
+
+  <script>
+    document.getElementById("surveyForm").addEventListener("submit", function(event) {
+      event.preventDefault();
+
+      const data = {
+        name: document.getElementById("username").value,
+        scoreA: document.getElementById("scoreA").value,
+        scoreB: document.getElementById("scoreB").value,
+        scoreC: document.getElementById("scoreC").value
+      };
+
+      fetch("https://script.google.com/macros/s/AKfycbwAXm577G__i8EPac4j--jy5Im04byZnhWR5hvR6k2kqkIA7bZoRg8kmGOSovKS7kxY/exec", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+      })
+      .then(response => response.text())
+      .then(result => {
+        alert("제출 완료! 응답: " + result);
+        document.getElementById("surveyForm").reset();
+      })
+      .catch(error => {
+        alert("에러 발생: " + error);
+      });
+    });
+  </script>
 </body>
 </html>
