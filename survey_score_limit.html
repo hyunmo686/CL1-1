@@ -2,46 +2,56 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>2점 제한 설문</title>
-  <link href="https://unpkg.com/survey-core/defaultV2.min.css" type="text/css" rel="stylesheet"/>
-  <script src="https://unpkg.com/knockout@3.5.1/build/output/knockout-latest.js"></script>
-  <script src="https://unpkg.com/survey-core/survey.core.min.js"></script>
-  <script src="https://unpkg.com/survey-knockout-ui/survey.knockout-ui.min.js"></script>
+  <title>다면평가</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 40px;
+    }
+    h2 {
+      text-align: center;
+    }
+    table {
+      width: 400px;
+      margin: 0 auto;
+      border-collapse: collapse;
+    }
+    th, td {
+      border: 1px solid #aaa;
+      padding: 10px;
+      text-align: center;
+    }
+    input[type="number"] {
+      width: 60px;
+      padding: 5px;
+      font-size: 16px;
+    }
+  </style>
 </head>
 <body>
-  <div id="surveyContainer" style="padding: 40px; max-width: 600px; margin: auto;"></div>
+  <h2>다면평가</h2>
 
-  <script>
-    const surveyJSON = {
-      title: "점수 평가 (총합은 2점을 넘지 않아야 합니다)",
-      pages: [
-        {
-          elements: [
-            { type: "text", name: "name", title: "이름을 입력해주세요" },
-            { type: "rating", name: "scoreA", title: "A에게 점수", rateMin: 0, rateMax: 2, rateStep: 1 },
-            { type: "rating", name: "scoreB", title: "B에게 점수", rateMin: 0, rateMax: 2, rateStep: 1 },
-            { type: "rating", name: "scoreC", title: "C에게 점수", rateMin: 0, rateMax: 2, rateStep: 1 }
-          ]
-        }
-      ],
-      completedHtmlOnCondition: [
-        {
-          expression: "{scoreA} + {scoreB} + {scoreC} > 2",
-          html: "<h3>⚠ 총점이 2점을 초과했습니다. 제출이 완료되지 않았습니다.</h3>"
-        },
-        {
-          expression: "{scoreA} + {scoreB} + {scoreC} <= 2",
-          html: "<h3>✅ 설문이 성공적으로 제출되었습니다. 감사합니다!</h3>"
-        }
-      ]
-    };
-
-    const model = new Survey.Model(surveyJSON);
-    Survey.StylesManager.applyTheme("defaultV2");
-
-    const container = document.getElementById("surveyContainer");
-    ko.cleanNode(container); // 중요: 중복 바인딩 방지
-    ko.applyBindings({ model }, container);
-  </script>
+  <table>
+    <thead>
+      <tr>
+        <th>이름</th>
+        <th>점수</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>A</td>
+        <td><input type="number" min="0" max="3" /></td>
+      </tr>
+      <tr>
+        <td>B</td>
+        <td><input type="number" min="0" max="3" /></td>
+      </tr>
+      <tr>
+        <td>C</td>
+        <td><input type="number" min="0" max="3" /></td>
+      </tr>
+    </tbody>
+  </table>
 </body>
 </html>
